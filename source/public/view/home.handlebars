@@ -1,0 +1,72 @@
+
+<head>
+    <title>ToDoList App</title>
+
+    {{!-- <script src="/model/todo.json" type="application/json" ></script> --}}
+    <link href="/styles/index.css" type="text/css" rel="stylesheet" />
+
+</head>
+<body class="light_theme">
+    <h1>ToDoList</h1>
+    <div class="button-container">
+        <a href='/form/' type="button" id="modal_form" class="main_button">
+            Create todo
+        </a>
+        <button type="button" id="toggle_theme" class="main_button">
+            Toggle style
+        </button>
+    </div>
+
+    <div class="button-container2">
+        <div class="left-buttons">
+            <button type="button" id="myButton3" class="main_button with-arrow">
+                Name
+            </button>
+            <button type="button" id="myButton4" class="main_button">
+                By Due Date
+            </button>
+            <button type="button" id="myButton5" class="main_button">
+                By Creation Date
+            </button>
+            <button type="button" id="myButton6" class="main_button">
+                By Importance
+            </button>
+        </div>
+        <div class="right-button">
+            <button type="button" id="myButton7" class="main_button">
+                Filter completed
+            </button>
+        </div>
+    </div>
+
+    <div class="todo-lists">
+        <table>
+            <tbody id="todocontainer">
+                {{#each tasks}}<tr>
+            <div class="row_container"> <div class="raw_container_content">
+                <div class="input-container"> <div class="input-group">
+                    <p  class="input_text"> {{this.duedate}}</p> <p class="input_text"> {{this.state}}</p>
+                  </div>
+                  <div class="sub-group">
+                    <p  class="input_text"> {{this.title}}</p> <p class="input_text"> {{this.description}}</p>
+                  </div>
+                </div>
+                <div class="edit-container">
+                  <span id="mytext3" class="input_text">♥♥♥♥♥</span>
+                  <a href="/edit/{{this.id}}" class="main_button">
+                    Edit
+                  </a>
+                </div>
+              </div>
+              <hr />
+              <br />
+            </div>
+          </tr> {{/each}}
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <script src="scripts/index.js"></script>
+</body>

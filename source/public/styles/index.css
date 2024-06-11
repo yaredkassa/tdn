@@ -1,0 +1,150 @@
+* {
+  box-sizing: border-box;
+}
+
+.light_theme {
+  background-color: white !important;
+  color: black !important;
+}
+
+.dark_theme {
+  background-color: black !important;
+  color: white !important;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 100px;
+  /* Space between buttons */
+  margin-bottom: 20px;
+  /* Space between button-container and button-container2 */
+}
+
+.button-container2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-buttons {
+  display: flex;
+  gap: 10px;
+  /* Space between the first four buttons */
+}
+
+.right-button {
+  margin-left: 20px;
+  /* Space between the group of buttons and the Filter completed button */
+}
+
+.raw_container_content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.input-container {
+  display: flex;
+  gap: 100px;
+  /* Space between them */
+}
+
+.edit-container {
+  margin-left: 20px;
+  /* */
+}
+
+.input-text {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.main_button {
+  background-color: #e72200;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.input_text {
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.main_button:hover {
+  background-color: darkred;
+  /* Optional: Change color on hover */
+}
+
+.with-arrow::after {
+  content: "\2B9F";
+  /* Unicode for downward arrow */
+  margin-left: 10px;
+  /* Space between text and arrow */
+}
+
+table {
+  width: 50%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/**
+Form style */
+.wide_input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form_div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+/* Content Wrap */
+.content_wrap {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+
+
+
+
+
