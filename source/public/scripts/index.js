@@ -1,3 +1,16 @@
+// const tb = document.getElementById("homes"),
+//   trs = [...tb.children];
+
+// document.body.onclick = (ev) => {
+//   let col = ev.target.dataset?.col;
+//   if (col) {
+//     trs.sort(
+//       (a, b) => a.children[col].textContent - b.children[col].textContent
+//     );
+//     trs.forEach((tr) => tb.append(tr));
+//   }
+// };
+
 // // util functions
 // const saveTasks = (data) => {
 //   const stringifyData = JSON.stringify(data);

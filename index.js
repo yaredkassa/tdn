@@ -12,11 +12,11 @@ const hbs = create({
   /* config */
   helpers: {
     importance(value) {
-      let icon = '';
+      let icon = "";
       for (let index = 0; index <= value; index++) {
-        if (index>0) {
+        if (index > 0) {
           icon = icon + "♥";
-        }         
+        }
       }
       return icon;
     },
@@ -32,17 +32,16 @@ app.use(express.static("source/public"));
 const getTasks = (task_flag) => {
   const jsonData = fs.readFileSync("source/public/model/todo.json");
   let tasks = JSON.parse(jsonData);
-  
-  if(task_flag=='*'){
+
+  if (task_flag == "*") {
     return tasks;
-  }else{
-      let task = tasks.filter((e) => e.id == task_flag);
-      return task;
+  } else {
+    let task = tasks.filter((e) => e.id == task_flag);
+    return task;
   }
 };
 
 function updateObject(update) {
-
   for (var i = 0; i < update.jsonRS.length; i++) {
     if (
       update.jsonRS[i][update.lookupField] === update.lookupKey ||
@@ -63,7 +62,7 @@ function updateObject(update) {
 app.get("/", (req, res) => {
   res.render("home", {
     layout: false,
-    tasks: getTasks('*'),
+    tasks: getTasks("*"),
   });
 });
 
@@ -75,9 +74,11 @@ app.get("/show/:id", (req, res) => {
 });
 
 app.get("/form", (req, res) => {
-  let detail = [{
-  edit : false,
-  }];
+  let detail = [
+    {
+      edit: false,
+    },
+  ];
 
   res.render("form", {
     layout: false,
@@ -86,18 +87,15 @@ app.get("/form", (req, res) => {
 });
 
 app.get("/edit/:id", function (req, res) {
-  
-    let task_detail = JSON.parse(JSON.stringify(getTasks(req.params.id)));
-    task_detail[0].edit = true;
+  let task_detail = JSON.parse(JSON.stringify(getTasks(req.params.id)));
+  task_detail[0].edit = true;
 
   res.render("form", {
     layout: false,
     edit: true,
     task: task_detail,
   });
-
 });
-
 
 /**
  *  api routes
@@ -125,10 +123,10 @@ app.post("/api/", function (req, res) {
   fs.readFile("source/public/model/todo.json", "utf8", function (err, data) {
     let tasks = JSON.parse(data);
     let new_task = JSON.parse(JSON.stringify(req.body));
-    
+
     new_task.id = uuidv4();
     tasks.push(new_task);
-    
+
     fs.writeFile(
       "source/public/model/todo.json",
       JSON.stringify(tasks),
@@ -141,7 +139,7 @@ app.post("/api/", function (req, res) {
         if (err) console.log(err);
       }
     );
-      
+
     let detail = [
       {
         edit: true,
@@ -158,36 +156,38 @@ app.post("/api/", function (req, res) {
       layout: false,
       task: detail,
     });
-
   });
-
 });
 
-
-
 app.put("/api/:id", function (req, res) {
-  // var jsonObj = [
-  //   { Id: "1", Username: "Ray", FatherName: "Thompson" },
-  //   { Id: "2", Username: "Steve", FatherName: "Johnson" },
-  //   { Id: "3", Username: "Albert", FatherName: "Einstein" },
-  // ];
-
   fs.readFile("source/public/model/todo.json", "utf8", function (err, data) {
     let tasks = JSON.parse(data);
     let id = req.params.id;
 
-    let update = {
-      jsonRS: jsonObj,
-      lookupField: "id",
-      lookupKey: id,
-      targetField: "Username",
-      targetData: "Thomas",
-      checkAllRows: false,
-    };
+    let update_task = JSON.parse(JSON.stringify(req.body));
+    let keys = ["duedate", "important", "completed", "title", "description"];
 
-    updateObject(update);
+    keys.forEach((key) => {
+      let update = {
+        jsonRS: tasks,
+        lookupField: "id",
+        lookupKey: id,
+        targetField: key,
+        targetData: update_task[key],
+        checkAllRows: false,
+      };
+      updateObject(update);
+    });
 
-    res.end(JSON.stringify(users));
+    let tasks_str = JSON.stringify(tasks);
+
+    fs.writeFileSync("source/public/model/todo.json", tasks_str); 
+
+    res.render("home", {
+      layout: false,
+      tasks: getTasks("*"),
+    });
+    
   });
 });
 
