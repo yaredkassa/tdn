@@ -18,38 +18,49 @@
 
   <div class="button-container2">
     <div class="left-buttons">
-      <button type="button" id="myButton3" class="main_button with-arrow">
+      <button
+        type="button"
+        data-col="1"
+        data-state="up"
+        class="main_button with-arrow"
+      >
         Name
       </button>
-      <button type="button" id="myButton4" class="main_button">
+      <button type="button" id="sort_by_name" class="main_button">
         By Due Date
       </button>
-      <button type="button" id="myButton5" class="main_button">
+      <button type="button" id="sort_by_date" data-state="up" class="main_button">
         By Creation Date
       </button>
-      <button type="button" id="myButton6" class="main_button">
+      <button type="button" id="sort_by_importance" data-state="up" class="main_button">
         By Importance
       </button>
     </div>
     <div class="right-button">
-      <button type="button" id="myButton7" class="main_button">
+      <button type="button" id="sort_by_completeness" data-state="up" class="main_button">
         Filter completed
       </button>
     </div>
   </div>
 
   <div class="todo-lists">
-    <table>
-      <tbody id="todocontainer">
+    {{!-- <table>
+      <tbody id="toDoContainer"> --}}
         {{#each tasks}}
-          <tr>
-            <div class="row_container">
+            <div class="row_container"
+            id="{{this.id}}"
+            data-duedate="{{this.duedate}}"
+            data-completed="{{this.completed}}"
+            data-title="{{this.title}}"
+            data-description="{{this.description}}"
+            data-important="{{this.important}}"
+            >
               <div class="raw_container_content">
                 <div class="input-container">
                   <div class="input-group">
-                    <p class="input_text"> {{this.duedate}}</p>
-                    <p class="input_text">
-                      {{#if completed}}
+                    <p class="input_text_light"> {{this.duedate}}</p>
+                    <p class="input_text_light">
+                      {{#if this.completed}}
                         <input
                           type="checkbox"
                           id="state"
@@ -69,12 +80,12 @@
                       {{/if}}</p>
                   </div>
                   <div class="sub-group">
-                    <p class="input_text"> {{this.title}}</p>
-                    <p class="input_text"> {{this.description}}</p>
+                    <p class="input_text_light"> {{this.title}}</p>
+                    <p class="input_text_light"> {{this.description}}</p>
                   </div>
                 </div>
                 <div class="edit-container">
-                  <span id="mytext3" class="input_text">
+                  <span id="mytext3" class="input_text_light">
                     {{#importance this.important}}{{/importance}}
                   </span>
                   <a href="/edit/{{this.id}}" class="main_button">
@@ -85,11 +96,10 @@
               <hr />
               <br />
             </div>
-          </tr>
         {{/each}}
 
-      </tbody>
-    </table>
+      {{!-- </tbody>
+    </table> --}}
   </div>
 
   <script src="scripts/index.js"></script>

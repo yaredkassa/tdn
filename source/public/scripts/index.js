@@ -1,79 +1,59 @@
-// const tb = document.getElementById("homes"),
-//   trs = [...tb.children];
+function setTheme(themeName) {
+  localStorage.setItem("theme", themeName);
 
-// document.body.onclick = (ev) => {
-//   let col = ev.target.dataset?.col;
-//   if (col) {
-//     trs.sort(
-//       (a, b) => a.children[col].textContent - b.children[col].textContent
-//     );
-//     trs.forEach((tr) => tb.append(tr));
-//   }
-// };
+  let app_body = document.body;
+  app_body.className = themeName + "_theme";
 
-// // util functions
-// const saveTasks = (data) => {
-//   const stringifyData = JSON.stringify(data);
-//   // fs.writeFileSync("source/public/model/todo.json", stringifyData);
+  let text_inputs = document.querySelectorAll("[class^=input_text_]");
+  let selected_class_name = "input_text_" + themeName;
+  
+  for (var i = 0; i < text_inputs.length; i++) {
+    text_inputs[i].className = selected_class_name;
+  }
+}
 
-// };
+function theme_init() {
+  if (localStorage.getItem("theme")) {
+    setTheme(localStorage.getItem("theme"));
+  } else {
+    setTheme("light");
+  }
 
-// // Get the button that opens the modal
-// let button_x = document.getElementById("toggle_theme");
+  let theme_button = document.getElementById("toggle_theme");
+  if (theme_button) {
+    theme_button.onclick = (e) => {
+      let app_body = document.body;
+      let app_body_class = app_body.className;
 
-// if (button_x) {
-//   // When the user clicks the button, open the modal
-//   button_x.onclick = () => {
-//     console.log("Good Job Yared!");
-//   };
-// }
+      if (app_body_class == "dark_theme") {
+        setTheme("light");
+      } else {
+        setTheme("dark");
+      }
+    };
+  }
+}
 
-// fetch("model/todo.json").then((results) => results.json().then(console.log));
+theme_init();
 
-// var ele = document.getElementById("taskForm");
-// if(ele.addEventListener){
-//     ele.addEventListener("submit", callback, false);  //Modern browsers
-// }else if(ele.attachEvent){
-//     ele.attachEvent('onsubmit', callback);//Old IE
-// }
+// const tableBody = document.getElementById("toDoContainer");
+// const tableRows = [...tableBody.children];
 
-// document.querySelector("#taskForm").addEventListener("submit", function (e) {
-//   if (!isValid) {
-//     e.preventDefault(); //stop form from submitting
-//     console.log('THe form is submitted');
-//   }
-// });
-
-// // async function loadNames() {
-// //   const response = await fetch("model/todo.json");
-// //   const json = await response.json();
-
-// //   console.log("Here are the tskes", JSON.stringify(json));
-// // }
-
-// // loadNames();
-
-// // Get the button that opens the modal
-// // let button_create = document.getElementById("create");
-
-// // let taskForm = document.getElementById("taskForm");
-
-// // if (taskForm) {
-// // taskForm.addEventListener("submit", (e) => {
-// //   e.preventDefault();
-
-// //   let title = document.getElementById("title");
-// //   let important = document.getElementById("important");
-// //   let input_due_date = document.getElementById("duedate");
-// //   let input_completed = document.getElementById("completed");
-// //   let input_description = document.getElementById("description");
-
-// //   saveTasks({
-// //     title: title,
-// //     day: important,
-// //     open: input_due_date,
-// //     task: input_completed,
-// //     description: input_description,
-// //   });
-// // });
-// // }
+document.body.onclick = (ev) => {
+  let col = ev.target.dataset?.col;
+  let state = ev.target.dataset?.state;
+  if (col) {
+    if (state == "up") {
+      tableRows.sort(
+        (a, b) => a.children[col].textContent - b.children[col].textContent
+      );
+      ev.target.dataset.state = "down";
+    } else {
+      tableRows.sort(
+        (a, b) => b.children[col].textContent - a.children[col].textContent
+      );
+      ev.target.dataset.state = "up";
+    }
+    tableRows.forEach((tr) => tableBody.append(tr));
+  }
+};

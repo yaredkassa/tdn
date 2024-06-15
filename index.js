@@ -125,37 +125,45 @@ app.post("/api/", function (req, res) {
     let new_task = JSON.parse(JSON.stringify(req.body));
 
     new_task.id = uuidv4();
+
+    var today = new Date();
+    new_task.creation_date = today.toLocaleDateString("en-US");
+
     tasks.push(new_task);
 
-    fs.writeFile(
-      "source/public/model/todo.json",
-      JSON.stringify(tasks),
-      {
-        encoding: "utf8",
-        flag: "w",
-        mode: 0o666,
-      },
-      (err) => {
-        if (err) console.log(err);
-      }
-    );
 
-    let detail = [
-      {
-        edit: true,
-        duedate: new_task.duedate,
-        important: new_task.important,
-        completed: Boolean(new_task.completed),
-        title: new_task.title,
-        description: new_task.description,
-        id: new_task.id,
-      },
-    ];
+    let tasks_str = JSON.stringify(tasks);
+    fs.writeFileSync("source/public/model/todo.json", tasks_str);
 
-    res.render("form", {
-      layout: false,
-      task: detail,
-    });
+    if(req.query.overview){
+
+      res.render("home", {
+        layout: false,
+        tasks: getTasks(new_task.id),
+      });
+
+    }else{
+
+      let detail = [
+        {
+          edit: true,
+          duedate: new_task.duedate,
+          important: new_task.important,
+          completed: Boolean(new_task.completed),
+          title: new_task.title,
+          description: new_task.description,
+          id: new_task.id,
+        },
+      ];
+
+      res.render("form", {
+        layout: false,
+        task: detail,
+      });
+
+    }
+    // console.log(res.query.overview, "post -------------");
+
   });
 });
 
@@ -183,11 +191,23 @@ app.put("/api/:id", function (req, res) {
 
     fs.writeFileSync("source/public/model/todo.json", tasks_str); 
 
-    res.render("home", {
-      layout: false,
-      tasks: getTasks("*"),
-    });
-    
+    if(req.query.overview){
+
+      res.render("home", {
+        layout: false,
+        tasks: getTasks(id),
+      });
+
+    }else{
+
+      res.render("home", {
+        layout: false,
+        tasks: getTasks("*"),
+      });
+      
+    }
+
+
   });
 });
 

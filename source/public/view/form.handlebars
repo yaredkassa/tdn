@@ -7,7 +7,7 @@
 
 </head>
 
-<body>
+<body class="light_theme">
 
   <h1>ToDoList Form </h1>
 
@@ -40,13 +40,14 @@
 
 
     <button class="main_button" id="create" type="submit"> {{#if this.edit}} Update {{else}} Create {{/if}}</button>
-    <button class="main_button" id="create" type="submit"> {{#if this.edit}} Update & Overview {{else}} Create &
+    <button class="main_button" id="create" type="submit"  formaction="{{#if this.edit}}/api/{{this.id}}?_method=PUT&overview=true{{else}}/api/?overview=true{{/if}}"> 
+    {{#if this.edit}} Update & Overview {{else}} Create &
       Overview {{/if}} </button>
     <a class="main_button" id="create" href="/"> Overview </a>
 
   </form>
   {{/each}}
-  <script src="scripts/index.js"></script>
+  <script src="../scripts/index.js"></script>
 </body>
 
 </html>
