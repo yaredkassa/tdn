@@ -1,5 +1,6 @@
 import fs from "fs";
 import express from "express";
+import moment from "moment";
 import methodOverride from "method-override";
 import { v4 as uuidv4 } from "uuid";
 import { create } from "express-handlebars";
@@ -20,6 +21,14 @@ const hbs = create({
       }
       return icon;
     },
+    relativeTime(value) {
+      let date_info = moment(value, "YYYY-MM-DD").fromNow();
+      if (date_info == "Invalid date") {
+        return 'someday';
+      }else{
+        return date_info;
+      }
+    },
   },
 });
 
@@ -35,6 +44,9 @@ const getTasks = (task_flag) => {
 
   if (task_flag == "*") {
     return tasks;
+  } else if (task_flag == "completed") {
+    let task = tasks.filter((e) => e.completed == 'true');
+    return task;
   } else {
     let task = tasks.filter((e) => e.id == task_flag);
     return task;
@@ -56,33 +68,32 @@ function updateObject(update) {
 }
 
 /**
- *  UI routes
+ * Routes
  *
  */
 app.get("/", (req, res) => {
-  res.render("home", {
-    layout: false,
-    tasks: getTasks("*"),
-  });
-});
-
-app.get("/show/:id", (req, res) => {
-  res.render("home", {
-    layout: false,
-    tasks: getTasks(req.params.id),
-  });
+  var completed = req.query.completed;
+  if (completed) {
+    res.render("home", {
+      layout: false,
+      tasks: getTasks("completed"),
+    });
+  } else {
+    res.render("home", {
+      layout: false,
+      tasks: getTasks("*"),
+    });
+  }
 });
 
 app.get("/form", (req, res) => {
-  let detail = [
-    {
-      edit: false,
-    },
-  ];
-
   res.render("form", {
     layout: false,
-    task: detail,
+    task: [
+      {
+        edit: false,
+      },
+    ],
   });
 });
 
@@ -97,29 +108,10 @@ app.get("/edit/:id", function (req, res) {
   });
 });
 
-/**
- *  api routes
- *
- */
-
-app.get("/api/", function (req, res) {
-  fs.readFile("source/public/model/todo.json", "utf8", function (err, data) {
-    res.end(data);
-  });
-});
-
-app.get("/api/:id", function (req, res) {
-  fs.readFile("source/public/model/todo.json", "utf8", function (err, data) {
-    var tasks = JSON.parse(data);
-    let op = tasks.filter((e) => e.id == req.params.id);
-    res.end(JSON.stringify(op));
-  });
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/api/", function (req, res) {
+app.post("/", function (req, res) {
   fs.readFile("source/public/model/todo.json", "utf8", function (err, data) {
     let tasks = JSON.parse(data);
     let new_task = JSON.parse(JSON.stringify(req.body));
@@ -131,23 +123,19 @@ app.post("/api/", function (req, res) {
 
     tasks.push(new_task);
 
-
     let tasks_str = JSON.stringify(tasks);
     fs.writeFileSync("source/public/model/todo.json", tasks_str);
 
-    if(req.query.overview){
-
+    if (req.query.overview) {
       res.render("home", {
         layout: false,
         tasks: getTasks(new_task.id),
       });
-
-    }else{
-
+    } else {
       let detail = [
         {
           edit: true,
-          duedate: new_task.duedate,
+          due_date: new_task.due_date,
           important: new_task.important,
           completed: Boolean(new_task.completed),
           title: new_task.title,
@@ -160,20 +148,17 @@ app.post("/api/", function (req, res) {
         layout: false,
         task: detail,
       });
-
     }
-    // console.log(res.query.overview, "post -------------");
-
   });
 });
 
-app.put("/api/:id", function (req, res) {
+app.put("/:id", function (req, res) {
   fs.readFile("source/public/model/todo.json", "utf8", function (err, data) {
     let tasks = JSON.parse(data);
     let id = req.params.id;
 
     let update_task = JSON.parse(JSON.stringify(req.body));
-    let keys = ["duedate", "important", "completed", "title", "description"];
+    let keys = ["due_date", "important", "completed", "title", "description"];
 
     keys.forEach((key) => {
       let update = {
@@ -189,25 +174,16 @@ app.put("/api/:id", function (req, res) {
 
     let tasks_str = JSON.stringify(tasks);
 
-    fs.writeFileSync("source/public/model/todo.json", tasks_str); 
+    fs.writeFileSync("source/public/model/todo.json", tasks_str);
 
-    if(req.query.overview){
-
+    if (req.query.overview) {
       res.render("home", {
         layout: false,
         tasks: getTasks(id),
       });
-
-    }else{
-
-      res.render("home", {
-        layout: false,
-        tasks: getTasks("*"),
-      });
-      
+    } else {
+      res.redirect("/");
     }
-
-
   });
 });
 

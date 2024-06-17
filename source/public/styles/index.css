@@ -92,14 +92,16 @@
 
 .main_button:hover {
   background-color: darkred;
-  /* Optional: Change color on hover */
 }
 
-.with-arrow::after {
-  content: "\2B9F";
-  /* Unicode for downward arrow */
+.with-up-arrow::after {
+  content: "\2B99";
   margin-left: 10px;
-  /* Space between text and arrow */
+}
+
+.with-down-arrow::after {
+  content: "\2B9F";
+  margin-left: 10px;
 }
 
 table {
@@ -149,4 +151,14 @@ Form style */
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+}
+
+.alert{
+  padding: 20px !important;
+  margin-top: 15px !important;
+  width: 100% !important;
+  font-size: 25px !important;
+  font-weight: 400;
+  background-color: rgb(73, 185, 255) !important;
+  border-radius: 8px;
 }
