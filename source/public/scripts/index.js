@@ -5,8 +5,13 @@
 function setSortingSetting(sortingSetting) {
   localStorage.setItem("sortBy", sortingSetting);
 }
+
 function setOrderSetting(order) {
   localStorage.setItem("order", order);
+}
+
+function setFilterSetting(filter) {
+  localStorage.setItem("filter", filter);
 }
 
 function configureSortOrder(event_button, caller) {
@@ -39,10 +44,19 @@ function configureSortOrder(event_button, caller) {
   return order;
 }
 
-function sortByName(caller) {
-  let event_button = document.getElementById("sort_by_name");
+function updateTasks(finalTaskList) {
+  let parent_body = document.getElementById("todo-lists");
+  let new_dom = "";
+  finalTaskList.forEach((attribute) => {
+    let current_item = document.getElementById(attribute.id);
+    if (current_item) {
+      new_dom = new_dom + current_item.outerHTML;
+    }
+  });
+  parent_body.innerHTML = new_dom;
+}
 
-  setSortingSetting("name");
+function resetSortView() {
   [
     "sort_by_name",
     "sort_by_due_date",
@@ -51,6 +65,75 @@ function sortByName(caller) {
   ].forEach((id_name) => {
     document.getElementById(id_name).className = "main_button";
   });
+}
+
+function filterCompleted(caller) {
+  let event_button = document.getElementById("sort_by_completeness");
+  let parent_body = document.getElementById("todo-lists");
+  let parent = parent_body.children;
+  let attributeArray = Array.from(parent).map((x) => {
+    x.dataset.id = x.id;
+    return x.dataset;
+  });
+
+  let order = "completed";
+
+  if (caller == "reload_event") {
+    if (localStorage.getItem("filter") == "up") {
+      order = "completed";
+      event_button.dataset.state = "all";
+    } else if (localStorage.getItem("filter") == "all") {
+      order = "all";
+      event_button.dataset.state = "down";
+    } else {
+      order = "incomplete";
+      event_button.dataset.state = "up";
+    }
+  } else {
+    if (event_button.dataset.state == "up") {
+      order = "completed";
+      setFilterSetting("up");
+      event_button.dataset.state = "all";
+    } else if (event_button.dataset.state == "all") {
+      order = "all";
+      setFilterSetting("all");
+      event_button.dataset.state = "down";
+    } else {
+      order = "incomplete";
+      setFilterSetting("down");
+      event_button.dataset.state = "up";
+    }
+  }
+
+  Array.from(attributeArray).filter((e) => {
+    let item = document.getElementById(e.id);
+    if (order == "incomplete") {
+      if (e.completed == "true") {
+        item.className = "hidden";
+      } else {
+        item.className = "row_container";
+      }
+      event_button.textContent = "show complete";
+    } else if (order == "completed") {
+      if (e.completed == "true") {
+        item.className = "row_container";
+      } else {
+        item.className = "hidden";
+      }
+      event_button.textContent = "show all";
+    } else {
+      item.className = "row_container";
+      event_button.textContent = "filter incomplete";
+    }
+  });
+}
+
+function sortByName(caller) {
+  let event_button = document.getElementById("sort_by_name");
+
+  setSortingSetting("name");
+
+  resetSortView();
 
   let parent_body = document.getElementById("todo-lists");
   let parent = parent_body.children;
@@ -83,14 +166,7 @@ function sortByName(caller) {
     return 0;
   });
 
-  let new_dom = "";
-  attributeArray.forEach((attribute) => {
-    let current_item = document.getElementById(attribute.id);
-    if (current_item) {
-      new_dom = new_dom + current_item.outerHTML;
-    }
-  });
-  parent_body.innerHTML = new_dom;
+  updateTasks(attributeArray);
 }
 
 function sortByDueDate(caller) {
@@ -98,14 +174,7 @@ function sortByDueDate(caller) {
 
   setSortingSetting("due_date");
 
-  [
-    "sort_by_name",
-    "sort_by_due_date",
-    "sort_by_creation_date",
-    "sort_by_importance",
-  ].forEach((id_name) => {
-    document.getElementById(id_name).className = "main_button";
-  });
+  resetSortView();
 
   let parent_body = document.getElementById("todo-lists");
   let parent = parent_body.children;
@@ -128,14 +197,7 @@ function sortByDueDate(caller) {
     return item1 - item2;
   });
 
-  let new_dom = "";
-  attributeArray.forEach((attribute) => {
-    let current_item = document.getElementById(attribute.id);
-    if (current_item) {
-      new_dom = new_dom + current_item.outerHTML;
-    }
-  });
-  parent_body.innerHTML = new_dom;
+  updateTasks(attributeArray);
 }
 
 function sortByCreationDate(caller) {
@@ -143,14 +205,8 @@ function sortByCreationDate(caller) {
 
   setSortingSetting("creation_date");
 
-  [
-    "sort_by_name",
-    "sort_by_due_date",
-    "sort_by_creation_date",
-    "sort_by_importance",
-  ].forEach((id_name) => {
-    document.getElementById(id_name).className = "main_button";
-  });
+  resetSortView();
+
   let parent_body = document.getElementById("todo-lists");
   let parent = parent_body.children;
   let attributeArray = Array.from(parent).map((x) => {
@@ -159,7 +215,6 @@ function sortByCreationDate(caller) {
   });
 
   let order = configureSortOrder(event_button, caller);
-
 
   attributeArray.sort((a, b) => {
     let item1, item2;
@@ -172,14 +227,8 @@ function sortByCreationDate(caller) {
     }
     return item1 - item2;
   });
-  let new_dom = "";
-  attributeArray.forEach((attribute) => {
-    let current_item = document.getElementById(attribute.id);
-    if (current_item) {
-      new_dom = new_dom + current_item.outerHTML;
-    }
-  });
-  parent_body.innerHTML = new_dom;
+
+  updateTasks(attributeArray);
 }
 
 function sortByImportance(caller) {
@@ -187,14 +236,7 @@ function sortByImportance(caller) {
 
   setSortingSetting("importance");
 
-  [
-    "sort_by_name",
-    "sort_by_due_date",
-    "sort_by_creation_date",
-    "sort_by_importance",
-  ].forEach((id_name) => {
-    document.getElementById(id_name).className = "main_button";
-  });
+  resetSortView();
 
   let parent_body = document.getElementById("todo-lists");
   let parent = parent_body.children;
@@ -217,14 +259,7 @@ function sortByImportance(caller) {
     return item_1 - item_2;
   });
 
-  let new_dom = "";
-  attributeArray.forEach((attribute) => {
-    let current_item = document.getElementById(attribute.id);
-    if (current_item) {
-      new_dom = new_dom + current_item.outerHTML;
-    }
-  });
-  parent_body.innerHTML = new_dom;
+  updateTasks(attributeArray);
 }
 
 function sorting_init() {
@@ -241,6 +276,19 @@ function sorting_init() {
         sortByImportance("reload_event");
       }
     }
+
+    //------------------------------------
+
+    let filterSetting = localStorage.getItem("filter");
+    if (filterSetting) {
+      filterCompleted("reload_event");
+    }
+
+    document.getElementById("sort_by_completeness").onclick = () => {
+      filterCompleted("button_event");
+    };
+
+    //------------------------------------
 
     document.getElementById("sort_by_name").onclick = () => {
       sortByName("button_event");

@@ -162,3 +162,7 @@ Form style */
   background-color: rgb(73, 185, 255) !important;
   border-radius: 8px;
 }
+
+.hidden{
+  display: none;
+}

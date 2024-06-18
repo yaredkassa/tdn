@@ -71,6 +71,14 @@ function updateObject(update) {
  * Routes
  *
  */
+
+
+app.get("/api/", function (req, res) {
+  fs.readFile("source/public/model/todo.json", "utf8", function (err, data) {
+    res.end(data);
+  });
+});
+
 app.get("/", (req, res) => {
   var completed = req.query.completed;
   if (completed) {
@@ -118,8 +126,7 @@ app.post("/", function (req, res) {
 
     new_task.id = uuidv4();
 
-    var today = new Date();
-    new_task.creation_date = today.toLocaleDateString("en-US");
+    new_task.creation_date = new Date().toISOString();
 
     tasks.push(new_task);
 

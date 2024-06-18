@@ -53,9 +53,10 @@
     </div>
     <div class="right-button">
       <a
-        href="?completed=true"
+        {{!-- href="?completed=true" --}}
+        type="button"
         id="sort_by_completeness"
-        data-state="complete"
+        data-state="up"
         class="main_button"
       >
         Filter completed
@@ -115,10 +116,15 @@
     {{/each}}
 
   </div>
-
-    {{#if tasks}} {{else}}
+{{!-- {{tasks}} --}}
+    {{#if tasks}} 
+    {{else}}
     <div class="alert"> Keine Todo gefunden!?</h1>
     {{/if}}
+    
+    <div id="alert" class="hidden"> Keine Todo gefunden!?</h1>
+    
+
   <script src="scripts/index.js"></script>
 
 </body>
